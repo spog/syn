@@ -36,7 +36,7 @@ $(DNA):		$(WASM) FORCE
 	@echo "Packaging DNA:"
 	@hc dna pack . -o $(DNA)
 	@hc app pack . -o $(HAPP)
-	@ls -l $@
+	@ls -l $(DNA) $(HAPP)
 
 # Recompile the target release WASM
 $(WASM): FORCE
@@ -75,4 +75,4 @@ clean:
 	    .cargo \
 			Cargo.lock \
 	    target \
-	    $(DNA)
+	    $(DNA) $(HAPP)
