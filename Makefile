@@ -10,6 +10,7 @@ DNANAME		= syn
 DNA		= $(DNANAME).dna
 HAPP		= $(DNANAME).happ
 WASM		= target/wasm32-unknown-unknown/release/syn.wasm
+HOLOCRATES	= holochain_crates
 
 # External targets; Uses a nix-shell environment to obtain Holochain runtimes, run tests, etc.
 .PHONY: all FORCE
@@ -29,7 +30,12 @@ install:	build
 
 build:	build-cargo build-dna
 
-build:		$(DNA)
+build:		$(HOLOCRATES)/hdk $(DNA)
+
+$(HOLOCRATES)/hdk:
+	if [ -d "$(NIX_ENV_PREFIX)/crates/hdk" ]; then \
+		ln -s $(NIX_ENV_PREFIX)/crates $(HOLOCRATES); \
+	fi
 
 # Package the DNA from the built target release WASM
 $(DNA):		$(WASM) FORCE
@@ -73,6 +79,7 @@ clean:
 	rm -rf \
 	    tests/node_modules \
 	    .cargo \
-			Cargo.lock \
+	    Cargo.lock \
 	    target \
+	    $(HOLOCRATES) \
 	    $(DNA) $(HAPP)
